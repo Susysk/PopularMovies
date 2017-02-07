@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="movie_api">xxxxx</string>
+    <string name="popular">popular</string>
+    <string name="top_rated">top_rated</string>
+    <string name="Top_rated">Top rated</string>
+    <string name="title_activity_error">ErrorActivity</string>
+    <string name="title_activity_movie_details">Movie Details</string>
+    <string name="movie_url">http://api.themoviedb.org/3/movie/</string>
+    <string name="Popular">Popular</string>
+    <string name="image_size">w342</string>
+    <string name="image_url">http://image.tmdb.org/t/p/</string>
+    <string name="image_not_found">http://i.imgur.com/0wLl34x.png</string>
+
+</resources>
