@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.android.popularmovies.MainActivity">
+    <item
+        android:id="@+id/action_sort"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:title="Sort"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:title="@string/Popular"
+                android:id="@+id/action_sort_popularity"/>
+            <item
+                android:id="@+id/action_sort_rating"
+                android:title="@string/Top_rated"/>
+        </menu>
+    </item>
+</menu>
