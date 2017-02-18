@@ -2,6 +2,9 @@ package com.example.android.popularmovies.movies;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.List;
+
 public class Movie implements Parcelable {
     public String title;
     public String original_title;
@@ -14,6 +17,17 @@ public class Movie implements Parcelable {
     public String vote_average;
     public String vote_count;
     public  String revenue;
+
+    public List<Trailer> trailers;
+
+    public List<Trailer> getTrailers() {
+        return trailers;
+    }
+
+    public void setTrailers(List<Trailer> trailers) {
+        this.trailers = trailers;
+    }
+
     public int id;
 
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {

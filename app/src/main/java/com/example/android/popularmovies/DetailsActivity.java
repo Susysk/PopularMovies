@@ -1,9 +1,11 @@
 package com.example.android.popularmovies;
 
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +14,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,23 +24,27 @@ import android.widget.Toast;
 import com.example.android.popularmovies.host.APISingleton;
 import com.example.android.popularmovies.host.MovieAsyncTask;
 import com.example.android.popularmovies.movies.Movie;
+import com.example.android.popularmovies.movies.Trailer;
+import com.example.android.popularmovies.movies.TrailerAdapter;
 import com.squareup.picasso.Picasso;
 
-public class DetailsActivity extends AppCompatActivity {
+import java.util.List;
 
-    public static Movie movie;
-    public static Intent intent;
-    public static TextView movie_release;
-    public static TextView movie_title;
-    public static TextView movie_year;
-    public static TextView movie_overview;
-    public static TextView movie_rate;
-    public static RatingBar rating;
-    public static ImageView movie_poster;
-    public static APISingleton singleton;
-    public static BroadcastReceiver receiver;
+public class DetailsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+    public static  BroadcastReceiver receiver;
+    Movie movie;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+       Intent intent;
+      TextView movie_release;
+         TextView movie_title;
+         TextView movie_year;
+         TextView movie_overview;
+        TextView movie_rate;
+         RatingBar rating;
+         ImageView movie_poster;
+         APISingleton singleton;
+        ListView trailers;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
         singleton = APISingleton.getInstance(this);
@@ -69,7 +77,6 @@ public class DetailsActivity extends AppCompatActivity {
         };
         intent= getIntent();
         registerReceiver(receiver,intentFilter);
-        movie = new Movie();
         int movie_position = intent.getIntExtra("position",0);
         movie = singleton.movies.get(movie_position);
         movie_title = (TextView)findViewById(R.id.movie_title);
@@ -78,6 +85,11 @@ public class DetailsActivity extends AppCompatActivity {
         movie_overview = (TextView)findViewById(R.id.movie_overview);
         movie_year = (TextView)findViewById(R.id.movie_year);
         movie_release = (TextView)findViewById(R.id.movie_release);
+        trailers = (ListView) findViewById(R.id.trailers);
+        List<Trailer> trailersList =movie.getTrailers();
+        TrailerAdapter adapter = new TrailerAdapter(this,trailersList);
+        trailers.setAdapter(adapter);
+        trailers.setOnItemClickListener(this);
         try {
             movie_title.setText(movie.getTitle());
             movie_year.setText(movie.getRelease().substring(0, 4));
@@ -142,4 +154,17 @@ public class DetailsActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Trailer trailer = movie.getTrailers().get(position);
+
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + "opkxU0dXMww"));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://www.youtube.com/watch?v=" + id));
+        try {
+            startActivity(appIntent);
+        } catch (ActivityNotFoundException ex) {
+            startActivity(webIntent);
+        }
+    }
 }

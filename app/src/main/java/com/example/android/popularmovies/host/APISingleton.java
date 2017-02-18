@@ -18,6 +18,26 @@ public class APISingleton {
     public  static String IMAGE_URL;
     public  static String IMAGE_SIZE;
     public  static String IMAGE_NOT_FOUND;
+    public static ArrayList<Integer> id;
+
+    public static int getTrailerIn() {
+        return trailerIn;
+    }
+
+    public static void setTrailerIn(int trailerIn) {
+        APISingleton.trailerIn = trailerIn;
+    }
+
+    public static int trailerIn;
+
+    public static ArrayList<Integer> getId() {
+        return id;
+    }
+
+    public static void setId(ArrayList<Integer> id) {
+        APISingleton.id = id;
+    }
+
 
     public Activity getActivity() {
         return activity;
@@ -26,7 +46,7 @@ public class APISingleton {
     public static List<Movie> getMovies() {
         return movies;
     }
-    public static void setMovies(ArrayList<Movie> movies) {
+    public static void setMovies(List<Movie> movies) {
         APISingleton.movies = movies;
     }
 
@@ -48,6 +68,8 @@ public class APISingleton {
      public static synchronized APISingleton getInstance(Context context) {
         if (instance == null)
             instance = new APISingleton();
+         if(id==null)
+             id = new ArrayList<>();
         return instance;
 
     }

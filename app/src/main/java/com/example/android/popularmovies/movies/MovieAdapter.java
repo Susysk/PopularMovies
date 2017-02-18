@@ -48,6 +48,8 @@ public class MovieAdapter extends BaseAdapter {
 
         Picasso.with(context)
                 .load(singleton.images.get(position))
+                .placeholder(R.drawable.trex)
+                .error(R.drawable.trex)
                 .into(poster);
         return poster;
     }
