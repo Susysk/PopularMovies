@@ -61,6 +61,7 @@ public class MovieAsyncTask extends AsyncTask<String, Void, String> {
     public  static void getMovies(String jsonString) {
        singleton.getImages().clear();
         singleton.getMovies().clear();
+        singleton.getId().clear();
 
         try {
             if (jsonString != null) {
@@ -85,6 +86,7 @@ public class MovieAsyncTask extends AsyncTask<String, Void, String> {
                         singleton.images.add(APISingleton.getImageUrl()+ APISingleton.getImageSize() + movie.getString("poster_path"));
                     }
                     singleton.movies.add(newMovie);
+                    singleton.getId().add(newMovie.getId());
                     MainActivity.movieAdapter.notifyDataSetChanged();
                 }
             }

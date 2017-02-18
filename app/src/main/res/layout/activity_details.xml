@@ -133,6 +133,11 @@
                     android:layout_below="@+id/black_line"
                     android:layout_alignStart="@+id/black_line" />
             </ScrollView>
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/trailers">
+            </ListView>
 
         </RelativeLayout>
 
