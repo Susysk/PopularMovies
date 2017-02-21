@@ -5,142 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.android.popularmovies.DetailsActivity">
+    tools:context=".DetailsActivity">
+
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Widget.Design.CollapsingToolbar" />
 
     </android.support.design.widget.AppBarLayout>
-<ScrollView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/fragment"
+        android:name="com.example.android.popularmovies.DetailsActivityFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.example.android.popularmovies.DetailsActivity">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:layout="@layout/fragment_detail_activity" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
-            <TextView
-                tools:text="Smile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text=""
-                android:id="@+id/movie_title"
-                android:padding="@dimen/dimension"
-                android:textColor="@color/colorText"
-                android:textStyle="bold"
-                android:background="@color/colorPrimary"
-                android:visibility="visible"
-                android:layout_marginTop="54dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentStart="true" />
-            <ImageView
-                android:layout_width="140dp"
-                android:layout_height="200dp"
-                android:layout_marginTop="10dp"
-                android:id="@+id/movie_poster"
-                android:layout_below="@id/movie_title"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:visibility="visible" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/dimensionText"
-                android:text="No year for this movie"
-                android:id="@+id/movie_year"
-                android:textColor="@color/colorPrimary"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
-                android:layout_alignTop="@+id/movie_poster"
-                android:layout_toRightOf="@+id/movie_poster"
-                android:visibility="visible" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/dimensionPlot"
-                android:text="No release for this movie"
-                android:id="@+id/movie_release"
-                android:visibility="visible"
-                android:layout_below="@+id/movie_year"
-                android:layout_alignLeft="@+id/movie_year"
-                android:layout_alignStart="@+id/movie_year" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/dimensionTitle"
-                android:text="No rating for this movie"
-                android:id="@+id/movie_rating"
-                android:visibility="visible"
-                android:layout_below="@+id/movie_release"
-                android:layout_alignLeft="@+id/movie_release"
-                android:layout_alignStart="@+id/movie_release" />
-            <RatingBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/rating"
-                android:layout_alignLeft="@+id/movie_rating"
-                android:layout_alignStart="@+id/movie_rating"
-                android:layout_below="@+id/movie_rating"
-                style="?android:attr/ratingBarStyleSmall"
-                android:isIndicator="true"
-                android:stepSize="0.25"
-                android:layout_marginTop="20dp"
-                android:rating="5.0"
-                />
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dp"
-                android:layout_margin="11dp"
-                android:layout_below = "@id/movie_poster"
-                android:background="@color/colorText"
-                android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:id="@+id/black_line"
-                android:visibility="visible" />
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignTop="@+id/black_line"
-                android:layout_alignParentStart="true">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/dimensionPlot"
-                    android:id="@+id/movie_overview"
-                    android:visibility="visible"
-                    android:text="No Overview"
-                    android:layout_below="@+id/black_line"
-                    android:layout_alignStart="@+id/black_line" />
-            </ScrollView>
-            <ListView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/trailers">
-            </ListView>
-
-        </RelativeLayout>
-
-    </RelativeLayout>
-</ScrollView>
 </android.support.design.widget.CoordinatorLayout>
