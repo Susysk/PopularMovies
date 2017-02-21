@@ -21,6 +21,7 @@ import android.widget.GridView;
 
 import com.example.android.popularmovies.host.APISingleton;
 import com.example.android.popularmovies.host.MovieAsyncTask;
+import com.example.android.popularmovies.host.MovieTrailerAsyncTask;
 import com.example.android.popularmovies.movies.MovieAdapter;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG_TASK_FRAGMENT = "task_fragment";
     public static BroadcastReceiver receiver;
     protected TaskFragment taskFragment;
+    public static MovieTrailerAsyncTask movieTrailerAsyncTask;
 
     public static BroadcastReceiver getReceiver() {
         return receiver;
@@ -48,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         singleton = APISingleton.getInstance(this);
         singleton.setActivity(this);
         lastCriteria = null;
+        movieTrailerAsyncTask = new MovieTrailerAsyncTask();
+        movieTrailerAsyncTask.setActivity(this);
         setContentView(R.layout.activity_main);
         setupTaskFragment();
         if (savedInstanceState == null) {

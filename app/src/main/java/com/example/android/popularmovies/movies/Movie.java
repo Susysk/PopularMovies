@@ -3,6 +3,7 @@ package com.example.android.popularmovies.movies;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Movie implements Parcelable {
@@ -39,6 +40,7 @@ public class Movie implements Parcelable {
         }
     };
     public Movie() {
+        this.trailers = new ArrayList<>();
     }
     private Movie(Parcel parcel){
         this.id = parcel.readInt();

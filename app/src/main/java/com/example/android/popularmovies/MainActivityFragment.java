@@ -14,7 +14,7 @@ import android.widget.GridView;
 
 import com.example.android.popularmovies.host.APISingleton;
 import com.example.android.popularmovies.host.MovieAsyncTask;
-import com.example.android.popularmovies.host.TrailerAsyncTask;
+import com.example.android.popularmovies.host.MovieTrailerAsyncTask;
 import com.example.android.popularmovies.movies.Movie;
 import com.example.android.popularmovies.movies.MovieAdapter;
 
@@ -27,6 +27,7 @@ import java.util.ArrayList;
 public class MainActivityFragment extends Fragment {
     APISingleton singleton;
     MainActivity activity;
+    MovieTrailerAsyncTask trailerAsyncTask;
     public MainActivityFragment() {
     }
 
@@ -99,9 +100,8 @@ public class MainActivityFragment extends Fragment {
         MovieAsyncTask task = new MovieAsyncTask();
         task.setActivity(getActivity());
         task.execute(getResources().getString(R.string.popular), null);
-        TrailerAsyncTask trailerAsyncTask = new TrailerAsyncTask();
-        trailerAsyncTask.setActivity(getActivity());
-        trailerAsyncTask.execute(null, null);
+        trailerAsyncTask = new MovieTrailerAsyncTask();
+       trailerAsyncTask.setActivity(getActivity());
     }
 
 }

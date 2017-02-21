@@ -1,19 +1,15 @@
 package com.example.android.popularmovies.host;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-
 import com.example.android.popularmovies.ErrorActivity;
 import com.example.android.popularmovies.MainActivity;
 import com.example.android.popularmovies.movies.Movie;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,8 +18,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-
-
 public class MovieAsyncTask extends AsyncTask<String, Void, String> {
     private static APISingleton singleton;
     private Activity activity;
@@ -43,7 +37,7 @@ public class MovieAsyncTask extends AsyncTask<String, Void, String> {
             return response;
         }catch (Exception e){
             if(activity!=null)
-            activity.startActivity(new Intent(activity, ErrorActivity.class).setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+                activity.startActivity(new Intent(activity, ErrorActivity.class).setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
             return null;
         }
     }
@@ -59,7 +53,7 @@ public class MovieAsyncTask extends AsyncTask<String, Void, String> {
     }
 
     public  static void getMovies(String jsonString) {
-       singleton.getImages().clear();
+        singleton.getImages().clear();
         singleton.getMovies().clear();
         singleton.getId().clear();
 
@@ -94,8 +88,7 @@ public class MovieAsyncTask extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
     }
-    public static String getConnection(Uri.Builder builder)
-    {
+    public static String getConnection(Uri.Builder builder) {
         InputStream inputStream;
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
