@@ -18,10 +18,27 @@ public class Movie implements Parcelable {
     public String vote_average;
     public String vote_count;
     public  String revenue;
+    public ArrayList<Review> reviews;
+
+    public ArrayList<Review> getReviews() {
+        if(this.reviews==null) {
+            this.setReviews(new ArrayList<Review>());
+            return new ArrayList<>();
+        }
+        else
+        return reviews;
+    }
+
+    public void setReviews(ArrayList<Review> reviews) {
+        this.reviews = reviews;
+    }
 
     public List<Trailer> trailers;
 
     public List<Trailer> getTrailers() {
+        if(this.trailers==null)
+            return new ArrayList<Trailer>();
+        else
         return trailers;
     }
 

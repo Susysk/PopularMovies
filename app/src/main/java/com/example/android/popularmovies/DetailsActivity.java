@@ -17,28 +17,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.GridView;
 
 import com.example.android.popularmovies.host.APISingleton;
 import com.example.android.popularmovies.host.MovieAsyncTask;
-import com.example.android.popularmovies.host.MovieTrailerAsyncTask;
-import com.example.android.popularmovies.movies.MovieAdapter;
+import com.example.android.popularmovies.movies.ReviewAdapter;
 import com.example.android.popularmovies.movies.TrailerAdapter;
 
 import java.util.ArrayList;
 
 public class DetailsActivity extends AppCompatActivity {
-    public static MovieAdapter movieAdapter;
     static public String lastCriteria;
-    static GridView gridview;
     public static APISingleton singleton;
     private final String TAG_TASK_FRAGMENT = "task_fragment";
     public static BroadcastReceiver receiver;
     protected DetailsActivity.TaskFragment taskFragment;
-    public static MovieTrailerAsyncTask movieTrailerAsyncTask;
     public static int idMovie;
     public static int movie_Position;
     public static TrailerAdapter trailerAdapter;
+    public static ReviewAdapter reviewAdapter;
     public static BroadcastReceiver getReceiver() {
         return receiver;
     }
@@ -55,7 +51,13 @@ public class DetailsActivity extends AppCompatActivity {
         lastCriteria = null;
         Intent intent = getIntent();
        movie_Position = intent.getIntExtra("position",0);
-       idMovie = singleton.getMovies().get(movie_Position).getId();
+        try {
+
+            idMovie = singleton.getMovies().get(movie_Position).getId();
+        }
+        catch(Exception e){
+
+        }
         setContentView(R.layout.activity_details);
         setupTaskFragment();
         if (savedInstanceState == null) {

@@ -7,4 +7,5 @@
     <dimen name="dimensionText">22dp</dimen>
     <dimen name="dimensionPlot">16dp</dimen>
     <dimen name="dimensionTitle">22dp</dimen>
+    <dimen name="dimensionTitle2">18dp</dimen>
 </resources>

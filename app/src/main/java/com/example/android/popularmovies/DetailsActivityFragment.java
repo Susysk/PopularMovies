@@ -1,8 +1,5 @@
 package com.example.android.popularmovies;
 
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,27 +7,30 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.android.popularmovies.host.APISingleton;
+import com.example.android.popularmovies.host.MovieReviewAsyncTask;
 import com.example.android.popularmovies.host.MovieTrailerAsyncTask;
 import com.example.android.popularmovies.movies.Movie;
-import com.example.android.popularmovies.movies.Trailer;
+import com.example.android.popularmovies.movies.Review;
+import com.example.android.popularmovies.movies.ReviewAdapter;
 import com.example.android.popularmovies.movies.TrailerAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 
-public class DetailsActivityFragment extends Fragment implements AdapterView.OnItemClickListener{
+public class DetailsActivityFragment extends Fragment {
     APISingleton singleton;
     DetailsActivity activity;
     public static TrailerAdapter adapter;
+    public static ReviewAdapter reviewAdapter;
     Movie movie;
     MovieTrailerAsyncTask task;
+    MovieReviewAsyncTask reviewAsyncTask;
     public DetailsActivityFragment() {
     }
 
@@ -51,6 +51,7 @@ public class DetailsActivityFragment extends Fragment implements AdapterView.OnI
         RatingBar rating;
         ImageView movie_poster;
         RecyclerView trailers;
+        RecyclerView reviews;
         movie = singleton.movies.get(((DetailsActivity)getActivity()).movie_Position);
         movie_title = (TextView) rootView.findViewById(R.id.movie_title);
         movie_rate = (TextView) rootView.findViewById(R.id.movie_rating);
@@ -58,14 +59,21 @@ public class DetailsActivityFragment extends Fragment implements AdapterView.OnI
         movie_overview = (TextView) rootView.findViewById(R.id.movie_overview);
         movie_year = (TextView) rootView.findViewById(R.id.movie_year);
         trailers = (  RecyclerView)  rootView.findViewById(R.id.trailers);
+        reviews = (RecyclerView) rootView.findViewById(R.id.reviews);
         trailers.setVisibility(View.VISIBLE);
+        reviews.setVisibility(View.VISIBLE);
         if(movie.getTrailers()!=null) {
-            ArrayList<Trailer> prova = new ArrayList<>();
             adapter = new TrailerAdapter(getContext(),movie.getTrailers());
             activity.trailerAdapter=adapter;
             trailers.setAdapter(adapter);
             trailers.setLayoutManager(new GridLayoutManager(getContext(),1));
         }
+        if(movie.getReviews()==null)
+            movie.setReviews(new ArrayList<Review>());
+        reviewAdapter = new ReviewAdapter(getContext(),movie.getReviews());
+        activity.reviewAdapter=reviewAdapter;
+        reviews.setAdapter(reviewAdapter);
+        reviews.setLayoutManager(new GridLayoutManager(getContext(),1));
         try {
             movie_title.setText(movie.getTitle());
             movie_year.setText(movie.getRelease());
@@ -114,12 +122,15 @@ public class DetailsActivityFragment extends Fragment implements AdapterView.OnI
     @Override
     public void onCreate(Bundle savedInstanceState) {
             updateMovies();
+        setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
     }
     @Override
     public void onDestroy() {
         if(task!=null)
          task.cancel(true);
+        if(reviewAsyncTask!=null)
+            reviewAsyncTask.cancel(true);
         super.onDestroy();
     }
 
@@ -129,25 +140,14 @@ public class DetailsActivityFragment extends Fragment implements AdapterView.OnI
             updateMovies();
     }
     public void updateMovies() {
+        reviewAsyncTask = new MovieReviewAsyncTask();
+        reviewAsyncTask.setActivity(getActivity());
+        reviewAsyncTask.setId(((DetailsActivity)getActivity()).idMovie);
+        reviewAsyncTask.execute();
        task = new MovieTrailerAsyncTask();
         task.setActivity(getActivity());
         task.setId(((DetailsActivity)getActivity()).idMovie);
         task.execute();
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Trailer trailer = (Trailer)movie.getTrailers().get(position);
-        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + "opkxU0dXMww"));
-        Intent webIntent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("http://www.youtube.com/watch?v=" + id));
-        try {
-            startActivity(appIntent);
-            getActivity().finish();
-        } catch (ActivityNotFoundException ex) {
-            startActivity(webIntent);
-            getActivity().finish();
-        }
     }
     }
 

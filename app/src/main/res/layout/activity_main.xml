@@ -13,6 +13,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
     </android.support.design.widget.AppBarLayout>
+
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
