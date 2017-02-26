@@ -6,19 +6,21 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.example.android.popularmovies.host.APISingleton;
-import com.example.android.popularmovies.host.MovieAsyncTask;
-import com.example.android.popularmovies.host.MovieTrailerAsyncTask;
+import com.example.android.popularmovies.adapter.MovieAdapter;
+import com.example.android.popularmovies.data.APISingleton;
+import com.example.android.popularmovies.data.MovieAsyncTask;
+import com.example.android.popularmovies.data.MovieTrailerAsyncTask;
 import com.example.android.popularmovies.movies.Movie;
-import com.example.android.popularmovies.movies.MovieAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Susy on 06/02/2017.
@@ -46,15 +48,43 @@ public class MainActivityFragment extends Fragment {
         activity.gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Intent intent = new Intent(getActivity(), DetailsActivity.class);
-                MainActivity activity =(MainActivity)getActivity();
-                intent.putExtra("position", position);
-                startActivity(intent);
-                try {
-                    activity.unregisterReceiver(activity.getReceiver());
-                }
-                catch(Exception e){
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putLong("position",position);
+                editor.putInt("id",singleton.getMovies().get(position).getId());
+                int ciao = singleton.getMovies().get(position).getId();
+                System.out.println(ciao);
+                if(((MainActivity)getActivity()).isTablet==false) {
+                    Intent intent = new Intent(getActivity(), DetailsActivity.class);
+                    MainActivity activity = (MainActivity) getActivity();
+                    intent.putExtra("position", position);
+                    intent.putExtra("id", singleton.getMovies().get(position).getId());
+                    startActivity(intent);
+                    try {
+                        activity.unregisterReceiver(activity.getReceiver());
+                    } catch (Exception e) {
 
+                    }
+                }
+                if(((MainActivity)getActivity()).isTablet==true) {
+
+                    FragmentTransaction transaction =getActivity().getSupportFragmentManager().beginTransaction();
+                    Fragment fragment = new DetailsActivityFragment();
+                    transaction.replace(R.id.container_movies, fragment, null);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                    List<Integer> ids=null;
+                    if(((MainActivity)getActivity()).pref==true) {
+                        ids = new ArrayList<>(singleton.getFavImages().keySet());
+                        singleton.setTrailerIn(ids.get(position));
+                    }
+                    else
+                        singleton.setTrailerIn(singleton.getMovies().get(position).getId());
+                    try {
+                        activity.unregisterReceiver(activity.getReceiver());
+                    } catch (Exception e) {
+
+                    }
                 }
             }
         });
@@ -88,6 +118,7 @@ public class MainActivityFragment extends Fragment {
     public void onResume() {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortingCriteria = sharedPrefs.getString("criteria key", "popularity");
+
         super.onResume();
         if(activity.lastCriteria != null && !sortingCriteria.equals(activity.lastCriteria)){
             singleton.setMovies(new ArrayList<Movie>());

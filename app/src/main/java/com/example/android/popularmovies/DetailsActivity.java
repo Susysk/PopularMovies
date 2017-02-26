@@ -18,10 +18,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.android.popularmovies.host.APISingleton;
-import com.example.android.popularmovies.host.MovieAsyncTask;
-import com.example.android.popularmovies.movies.ReviewAdapter;
-import com.example.android.popularmovies.movies.TrailerAdapter;
+import com.example.android.popularmovies.data.APISingleton;
+import com.example.android.popularmovies.data.MovieAsyncTask;
 
 import java.util.ArrayList;
 
@@ -33,8 +31,6 @@ public class DetailsActivity extends AppCompatActivity {
     protected DetailsActivity.TaskFragment taskFragment;
     public static int idMovie;
     public static int movie_Position;
-    public static TrailerAdapter trailerAdapter;
-    public static ReviewAdapter reviewAdapter;
     public static BroadcastReceiver getReceiver() {
         return receiver;
     }
@@ -51,13 +47,8 @@ public class DetailsActivity extends AppCompatActivity {
         lastCriteria = null;
         Intent intent = getIntent();
        movie_Position = intent.getIntExtra("position",0);
-        try {
 
-            idMovie = singleton.getMovies().get(movie_Position).getId();
-        }
-        catch(Exception e){
-
-        }
+            idMovie = intent.getIntExtra("id",0);
         setContentView(R.layout.activity_details);
         setupTaskFragment();
         if (savedInstanceState == null) {
@@ -67,7 +58,8 @@ public class DetailsActivity extends AppCompatActivity {
         }
 
         if(isConnectedViaWifi()==false){
-            startActivity(new Intent(getApplication(), ErrorActivity.class).setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+            startActivity(new Intent(getApplication(), ErrorActivity.class).putExtra("from","details")
+                    .setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
         }
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
@@ -82,7 +74,7 @@ public class DetailsActivity extends AppCompatActivity {
 
                     } else {
                         Log.i("error", "on broadcast connected");
-                        startActivity(new Intent(getApplication(), ErrorActivity.class).setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+                        startActivity(new Intent(getApplication(), ErrorActivity.class).putExtra("from","details").setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
 
                         finish();
                     }
@@ -99,6 +91,8 @@ public class DetailsActivity extends AppCompatActivity {
     @Override
     public void onPause(){
         super.onPause();
+        if(receiver!=null)
+            unregisterReceiver(receiver);
     }
     protected void setupTaskFragment() {
         FragmentManager fm = getSupportFragmentManager();

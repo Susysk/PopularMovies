@@ -21,6 +21,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:authorities="com.example.android.popularmovies"
+            android:name=".data.MovieContentProvider"
+            android:exported="false"
+            android:syncable="true" />
         <activity
             android:name=".ErrorActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

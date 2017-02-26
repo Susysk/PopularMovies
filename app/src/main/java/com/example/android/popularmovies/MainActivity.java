@@ -18,11 +18,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
+import android.widget.Toast;
 
-import com.example.android.popularmovies.host.APISingleton;
-import com.example.android.popularmovies.host.MovieAsyncTask;
-import com.example.android.popularmovies.host.MovieTrailerAsyncTask;
-import com.example.android.popularmovies.movies.MovieAdapter;
+import com.example.android.popularmovies.adapter.MovieAdapter;
+import com.example.android.popularmovies.data.APISingleton;
+import com.example.android.popularmovies.data.DBHelper;
+import com.example.android.popularmovies.data.MovieAsyncTask;
+import com.example.android.popularmovies.data.MovieFavoriteAsyncTask;
+import com.example.android.popularmovies.data.MovieTrailerAsyncTask;
 
 import java.util.ArrayList;
 
@@ -34,8 +37,10 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG_TASK_FRAGMENT = "task_fragment";
     public static BroadcastReceiver receiver;
     protected TaskFragment taskFragment;
+    MainActivityFragment fragment;
+    public boolean pref=false;
     public static MovieTrailerAsyncTask movieTrailerAsyncTask;
-
+    public static   boolean isTablet;
     public static BroadcastReceiver getReceiver() {
         return receiver;
     }
@@ -49,19 +54,31 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         singleton = APISingleton.getInstance(this);
         singleton.setActivity(this);
+
+        DBHelper db = new DBHelper(this);
+        singleton.setDb(db);
         lastCriteria = null;
         movieTrailerAsyncTask = new MovieTrailerAsyncTask();
         movieTrailerAsyncTask.setActivity(this);
+         isTablet=getResources().getBoolean(R.bool.isTablet);
         setContentView(R.layout.activity_main);
-        setupTaskFragment();
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment, new MainActivityFragment())
-                    .commit();
+        if(findViewById(R.id.container_movies)!=null){
+            if (savedInstanceState == null) {
+                fragment = new MainActivityFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment, fragment, "")
+                        .commit();
+                DetailsActivityFragment f2 = new DetailsActivityFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.container_movies, f2, "")
+                        .commit();
+            }
+            else
+                fragment = (MainActivityFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
         }
-
+        setupTaskFragment();
         if(isConnectedViaWifi()==false){
-            startActivity(new Intent(getApplication(), ErrorActivity.class).setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+            startActivity(new Intent(getApplication(), ErrorActivity.class).putExtra("from","main").setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
         }
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
@@ -76,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
                         } else {
                             Log.i("error", "on broadcast connected");
-                            startActivity(new Intent(getApplication(), ErrorActivity.class).setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+                            startActivity(new Intent(getApplication(), ErrorActivity.class).putExtra("from","main").setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
 
                             finish();
                         }
@@ -114,14 +131,27 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id== R.id.action_sort_rating){
+            pref=false;
             MainActivity.gridview.setAdapter(null);
             MainActivity.gridview.setAdapter(MainActivity.movieAdapter);
+            MainActivity.movieAdapter.setFav(0);
             new MovieAsyncTask().execute("top_rated", null);
         }
         if(id== R.id.action_sort_popularity){
+            pref=false;
             MainActivity.gridview.setAdapter(null);
             MainActivity.gridview.setAdapter(MainActivity.movieAdapter);
+            MainActivity.movieAdapter.setFav(0);
             new MovieAsyncTask().execute("popular", null);
+        }
+        if(id==R.id.action_sort_favorites){
+            pref=true;
+            MainActivity.gridview.setAdapter(null);
+            MainActivity.gridview.setAdapter(MainActivity.movieAdapter);
+            MainActivity.movieAdapter.setFav(1);
+            new MovieFavoriteAsyncTask(getContentResolver(),getApplicationContext()).execute();
+            if(singleton.getFavImages().isEmpty())
+                Toast.makeText(getApplicationContext(),"There is no favorite",Toast.LENGTH_LONG).show();
         }
 
         return super.onOptionsItemSelected(item);

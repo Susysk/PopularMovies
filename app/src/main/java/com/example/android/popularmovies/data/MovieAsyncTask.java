@@ -1,4 +1,4 @@
-package com.example.android.popularmovies.host;
+package com.example.android.popularmovies.data;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -47,9 +47,8 @@ public class MovieAsyncTask extends AsyncTask<String, Void, String> {
         if (response != null) {
             getMovies(response);
         } else {
-            activity.startActivity(new Intent(activity, ErrorActivity.class).setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+//            activity.startActivity(new Intent(activity, ErrorActivity.class).setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
         }
-
     }
 
     public  static void getMovies(String jsonString) {

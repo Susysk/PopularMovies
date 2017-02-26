@@ -20,6 +20,11 @@ public class Movie implements Parcelable {
     public  String revenue;
     public ArrayList<Review> reviews;
 
+    public Movie(String string, int anInt) {
+        this.posterPath=string;
+        this.id=anInt;
+    }
+
     public ArrayList<Review> getReviews() {
         if(this.reviews==null) {
             this.setReviews(new ArrayList<Review>());

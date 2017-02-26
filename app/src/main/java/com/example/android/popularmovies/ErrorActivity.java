@@ -18,6 +18,9 @@ public class ErrorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent i = getIntent();
+        System.out.println(i.getStringExtra("from"));
+        String from = i.getStringExtra("from");
         setContentView(R.layout.activity_error);
         Log.i("on create","on create error");
         if(isConnectedViaWifi()==true) {
