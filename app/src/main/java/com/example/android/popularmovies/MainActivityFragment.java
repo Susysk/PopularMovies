@@ -48,17 +48,18 @@ public class MainActivityFragment extends Fragment {
         activity.gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putLong("position",position);
-                editor.putInt("id",singleton.getMovies().get(position).getId());
                 int ciao = singleton.getMovies().get(position).getId();
                 System.out.println(ciao);
                 if(((MainActivity)getActivity()).isTablet==false) {
                     Intent intent = new Intent(getActivity(), DetailsActivity.class);
                     MainActivity activity = (MainActivity) getActivity();
-                    intent.putExtra("position", position);
-                    intent.putExtra("id", singleton.getMovies().get(position).getId());
+                    List<Integer> ids=null;
+                    if(((MainActivity)getActivity()).pref==true) {
+                        ids = new ArrayList<>(singleton.getFavImages().keySet());
+                        singleton.setTrailerIn(ids.get(position));
+                    }
+                    else
+                        singleton.setTrailerIn(singleton.getMovies().get(position).getId());
                     startActivity(intent);
                     try {
                         activity.unregisterReceiver(activity.getReceiver());

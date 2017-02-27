@@ -31,6 +31,10 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 
 public class DetailsActivityFragment extends Fragment {
     APISingleton singleton;
@@ -41,7 +45,19 @@ public class DetailsActivityFragment extends Fragment {
     Movie movie;
     boolean favorite =false;
     MovieTrailerAsyncTask task;
+    @BindView(R.id.movie_title)  TextView movie_title;
+    @BindView(R.id.movie_year) TextView movie_year;
+            @BindView(R.id.reviewsTitle)TextView reviewsTitle;
+    @BindView(R.id.trailersTitle)TextView trailerTitle;
+    @BindView(R.id.movie_overview) TextView movie_overview;
+    @BindView(R.id.movie_rating)TextView movie_rate;
+    @BindView(R.id.rating) RatingBar rating;
+    @BindView(R.id.movie_poster)ImageView movie_poster;
+    @BindView(R.id.trailers)RecyclerView trailers;
+    @BindView(R.id.reviews)RecyclerView reviews;
     MovieReviewAsyncTask reviewAsyncTask;
+    private Unbinder unbinder;
+
     public DetailsActivityFragment() {
     }
 
@@ -52,39 +68,22 @@ public class DetailsActivityFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_detail_activity, container, false);
         setHasOptionsMenu(true);
+        unbinder = ButterKnife.bind(this, rootView);
         DBHelper db = new DBHelper(getContext());
         singleton = APISingleton.getInstance(getContext());
-        TextView movie_release;
-        TextView movie_title;
-        TextView movie_year;
-        TextView reviewsTitle;
-        TextView trailerTitle;
-        TextView movie_overview;
-        TextView movie_rate;
-        RatingBar rating;
-        final Button favorites;
-        ImageView movie_poster;
-        RecyclerView trailers;
-        RecyclerView reviews;
+
         for(Movie m: singleton.movies){
             if(m.getId()==singleton.trailerIn)
                 movie=m;
         }
-//        movie = singleton.movies.get(((DetailsActivity)getActivity()).movie_Position);
-        movie_title = (TextView) rootView.findViewById(R.id.movie_title);
-        movie_rate = (TextView) rootView.findViewById(R.id.movie_rating);
+        final Button favorites;
         favorites = (Button) rootView.findViewById(R.id.favorites);
-        movie_poster = (ImageView) rootView.findViewById(R.id.movie_poster);
-        movie_overview = (TextView) rootView.findViewById(R.id.movie_overview);
-        movie_year = (TextView) rootView.findViewById(R.id.movie_year);
-        trailers = (RecyclerView) rootView.findViewById(R.id.trailers);
         if(movie!=null) {
             trailerTitle = (TextView) rootView.findViewById(R.id.trailersTitle);
             trailerTitle.setVisibility(View.VISIBLE);
             reviewsTitle = (TextView) rootView.findViewById(R.id.reviewsTitle);
             reviewsTitle.setVisibility(View.VISIBLE);
         }
-        reviews = (RecyclerView) rootView.findViewById(R.id.reviews);
         trailers.setVisibility(View.VISIBLE);
         reviews.setVisibility(View.VISIBLE);
         if(movie !=null) {
@@ -198,19 +197,29 @@ public class DetailsActivityFragment extends Fragment {
             updateMovies();
     }
     public void updateMovies() {
-        reviewAsyncTask = new MovieReviewAsyncTask();
-        reviewAsyncTask.setActivity(getActivity());
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-            int id = preferences.getInt("id",0);
-            reviewAsyncTask.setId(singleton.trailerIn);
-        reviewAsyncTask.setReviewAdapter(reviewAdapter);
-        reviewAsyncTask.execute();
-       task = new MovieTrailerAsyncTask();
-        task.setActivity(getActivity());
-        task.setId((singleton.trailerIn));
-        task.setTrailerAdapter(trailerAdapter);
-        task.execute();
+        Thread thread = new Thread(new Runnable(){
+            @Override
+            public void run(){
+                reviewAsyncTask = new MovieReviewAsyncTask();
+                reviewAsyncTask.setActivity(getActivity());
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                int id = preferences.getInt("id",0);
+                reviewAsyncTask.setId(singleton.trailerIn);
+                reviewAsyncTask.setReviewAdapter(reviewAdapter);
+                reviewAsyncTask.execute();
+                task = new MovieTrailerAsyncTask();
+                task.setActivity(getActivity());
+                task.setId((singleton.trailerIn));
+                task.setTrailerAdapter(trailerAdapter);
+                task.execute();
+            }
+        });
+        thread.start();
+    }
+    @Override
+    public void onDestroyView(){
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }
 
